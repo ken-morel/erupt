@@ -5,10 +5,12 @@ struct {
   Scene *scene;
   Font *font;
   Text *text;
+  Sprite *img;
 } Welcome = {
     .scene = NULL,
     .font = NULL,
     .text = NULL,
+    .img = NULL,
 };
 
 void welcomeKey(Scene *s, KeyEvent *e) {
@@ -20,13 +22,18 @@ void welcomeCreate(Scene *s) {
   Welcome.text =
       createText("Press any key to start", 0.2, Welcome.font, at(0, -0));
   Welcome.text->color = PURPLE;
+  Welcome.img =
+      createSprite("assets/images/home.png", 882, 520, at(-2, -2), at(2, 2));
 }
-void welcomeRender(Scene *s) { renderText(Welcome.text); }
+void welcomeRender(Scene *s) {
+  renderSprite(Welcome.img);
+  // renderText(Welcome.text);
+}
 
 Scene *createWelcomeScene(App *app) {
   if (Welcome.scene == NULL) {
     Welcome.scene = createScene(app);
-    Welcome.scene->background = BLUE;
+    Welcome.scene->background = WHITE;
     Welcome.scene->render = welcomeRender;
     Welcome.scene->create = welcomeCreate;
     Welcome.scene->onkey = welcomeKey;

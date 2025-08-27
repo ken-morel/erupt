@@ -1,3 +1,4 @@
+#define g_should_open_second_window 1
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>

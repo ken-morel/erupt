@@ -47,7 +47,8 @@ void eruptCreate(Scene *scene) {
   for (i = 0; i < NPLANES; i++)
     createPlane(&Erupt.planes[i]);
   Erupt.font = loadFontAsset("PlaywriteAUQLD-VariableFont_wght");
-  Erupt.text = createText("Click on the red box", 0.1, Erupt.font, at(0, -0.9));
+  Erupt.text =
+      createText("Click on the red box", 0.07, Erupt.font, at(0, -0.9));
 }
 
 void startMoving() {
@@ -56,6 +57,13 @@ void startMoving() {
   Erupt.time = 0;
 }
 
+void state0() {
+  int i;
+  Erupt.state = 0;
+  Erupt.time = 0;
+  for (i = 0; i < Erupt.numPlanes; i++)
+    Erupt.planes[i].sprite.color = TEAL;
+}
 void state1() {
   int i;
   Erupt.state = 1;
@@ -91,7 +99,8 @@ void state5() {
     Erupt.text->color = RED;
   } else {
     Erupt.planes[Erupt.clickedShape].sprite.color = RED;
-    setText(Erupt.text, "You won, take: $5");
+    setText(Erupt.text, "You won, Decrypted files, go take $5 in your browser");
+    system("xdg-open https://paypal.com/signin");
     Erupt.text->color = BLUE;
   }
 }
@@ -127,8 +136,8 @@ void eruptUpdate(Scene *scene, double theta) {
       if (Erupt.numPlanes > NPLANES)
         Erupt.numPlanes = NPLANES;
       Erupt.numRed++;
-      Erupt.state = 0;
-      Erupt.time = 0;
+
+      state0();
     }
   }
 
@@ -149,6 +158,7 @@ void eruptClick(Scene *scene, MouseClickEvent *e) {
   printf("clicked: %lf, %lf\n", e->x, e->y);
 
   int i;
+  Erupt.clickedShape = -1;
   for (i = 0; i < Erupt.numPlanes; i++) {
     Pos *p = getShapePosition(&Erupt.planes[i].sprite);
     double dx = p->x - e->x, dy = p->y - e->y;
@@ -156,10 +166,10 @@ void eruptClick(Scene *scene, MouseClickEvent *e) {
     if (theta < 0.05) {
       printf("was cicked");
       Erupt.clickedShape = i;
-      state5();
-      break;
     }
   }
+  if (Erupt.clickedShape == -1)
+    Erupt.clickedShape = 0;
 }
 
 Scene *createEruptScene(App *app) {

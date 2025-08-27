@@ -6,6 +6,7 @@
 // Initialize the applicaiton here
 void init(App *app) {
   setAppSize(app, 700, 700);
+  setAppTitle(app, "floating erupt");
   srand(clock());
 }
 
