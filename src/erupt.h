@@ -144,6 +144,8 @@ void eruptUpdate(Scene *scene, double theta) {
         Erupt.numPlanes = NPLANES;
       Erupt.numRed++;
 
+      setText(Erupt.text, "Click on the red box");
+      Erupt.text->color = WHITE;
       state0();
     }
   }

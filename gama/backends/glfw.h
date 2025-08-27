@@ -57,11 +57,11 @@ void onClose(GLFWwindow *win) {
   glfwSetWindowCloseCallback(newWin, onClose);
   glfwSetWindowShouldClose(newWin, 0);
   glfwMakeContextCurrent(newWin);
-  window = newWin;
   glfwPollEvents();
   glClear(GL_COLOR_BUFFER_BIT);
   _gama_render(gama);
   glfwSwapBuffers(newWin);
+  glfwMakeContextCurrent(newWin);
 }
 
 int main() {
