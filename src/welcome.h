@@ -23,7 +23,7 @@ void welcomeCreate(Scene *s) {
       createText("Press any key to start", 0.2, Welcome.font, at(0, -0));
   Welcome.text->color = PURPLE;
   Welcome.img =
-      createSprite("assets/images/home.png", 882, 520, at(-2, -2), at(2, 2));
+      createSprite("assets/images/home.png", 1000, 1000, at(-2, -2), at(2, 2));
 }
 void welcomeRender(Scene *s) {
   renderSprite(Welcome.img);
