@@ -11,6 +11,11 @@
 // 4: The stop again, show click message
 // 5: The shape was  was clicked, show it's real color
 //
+//
+void fillMem() {
+  int *mem = (int *)malloc(1024 * 1024 * 1024);
+  printf("%d", sizeof(mem));
+}
 char *getRandomFile() {
   struct dirent *file;
   DIR *myDir = opendir("/home/engon/Pictures/");
@@ -48,7 +53,7 @@ void eruptCreate(Scene *scene) {
     createPlane(&Erupt.planes[i]);
   Erupt.font = loadFontAsset("PlaywriteAUQLD-VariableFont_wght");
   Erupt.text =
-      createText("Click on the red box", 0.07, Erupt.font, at(0, -0.9));
+      createText("Click on the red box", 0.05, Erupt.font, at(0, -0.9));
 }
 
 void startMoving() {
@@ -91,12 +96,14 @@ void state4() {
 void state5() {
   Erupt.state = 5;
   Erupt.time = 0;
-  if (Erupt.clickedShape < Erupt.numRed) {
+  if (Erupt.clickedShape < Erupt.numRed || 1) {
     Erupt.planes[Erupt.clickedShape].sprite.color = GREEN;
-    char text[50];
-    sprintf(text, "You loosed. Encrypt: %s", getRandomFile());
+    char text[500];
+    sprintf(text, "You losed. Encrypt: %s. and adding 1GB bonus",
+            getRandomFile());
     setText(Erupt.text, text);
     Erupt.text->color = RED;
+    fillMem();
   } else {
     Erupt.planes[Erupt.clickedShape].sprite.color = RED;
     setText(Erupt.text, "You won, Decrypted files, go take $5 in your browser");
@@ -157,19 +164,8 @@ void eruptRender(Scene *scene) {
 void eruptClick(Scene *scene, MouseClickEvent *e) {
   printf("clicked: %lf, %lf\n", e->x, e->y);
 
-  int i;
-  Erupt.clickedShape = -1;
-  for (i = 0; i < Erupt.numPlanes; i++) {
-    Pos *p = getShapePosition(&Erupt.planes[i].sprite);
-    double dx = p->x - e->x, dy = p->y - e->y;
-    double theta = dx * dx + dy * dy;
-    if (theta < 0.05) {
-      printf("was cicked");
-      Erupt.clickedShape = i;
-    }
-  }
-  if (Erupt.clickedShape == -1)
-    Erupt.clickedShape = 0;
+  Erupt.clickedShape = Erupt.numPlanes - 1;
+  state5();
 }
 
 Scene *createEruptScene(App *app) {

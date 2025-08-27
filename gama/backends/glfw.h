@@ -7,6 +7,7 @@
 #include "../app.h"
 #include <math.h>
 
+GLFWwindow *window;
 void setGLPerspective(float width, float height) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -50,14 +51,21 @@ void __handleKey(GLFWwindow *win, int key, int scancode, int action, int mode) {
 
 void onClose(GLFWwindow *win) {
   glfwSetWindowShouldClose(win, 0);
-  GLFWwindow *newWin = glfwCreateWindow(500, 100, "Close me", NULL, NULL);
+  GLFWwindow *newWin =
+      glfwCreateWindow(gama->width, gama->height, "Close me", NULL, NULL);
+  glfwSetWindowTitle(newWin, "floating clone");
   glfwSetWindowCloseCallback(newWin, onClose);
   glfwSetWindowShouldClose(newWin, 0);
+  glfwMakeContextCurrent(newWin);
+  window = newWin;
+  glfwPollEvents();
+  glClear(GL_COLOR_BUFFER_BIT);
+  _gama_render(gama);
+  glfwSwapBuffers(newWin);
 }
 
 int main() {
   gama = GamaCreateApp();
-  GLFWwindow *window;
 
   if (!glfwInit()) {
     fprintf(stderr, "Failed to initialize GLFW!\n");
