@@ -1,11 +1,11 @@
-#include "../../../gama/gama/assets/gama/gama.h"
+#include "../gama/gama.h"
 
 #include "./erupt.h"
 #include "./welcome.h"
 
 // Initialize the applicaiton here
 void init(App *app) {
-  setAppSize(app, 800, 800);
+  setAppSize(app, 700, 700);
   srand(clock());
 }
 

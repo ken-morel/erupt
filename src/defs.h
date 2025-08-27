@@ -1,4 +1,4 @@
-#include "../../../gama/gama/assets/gama/gama.h"
+#include "../gama/gama.h"
 
 Scene *createWelcomeScene(App *app);
 Scene *createEruptScene(App *app);

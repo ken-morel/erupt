@@ -1,5 +1,6 @@
-#include "../../../gama/gama/assets/gama/gama.h"
+#include "../gama/gama.h"
 #include "plane.h"
+#include <dirent.h>
 #define NPLANES 20
 
 //
@@ -9,6 +10,18 @@
 // 3: they are moving -- ?
 // 4: The stop again, show click message
 // 5: The shape was  was clicked, show it's real color
+//
+char *getRandomFile() {
+  struct dirent *file;
+  DIR *myDir = opendir("/home/engon/Pictures/");
+  if (myDir == NULL)
+    return "Baby Michael";
+  file = readdir(myDir);
+  if (file != NULL)
+    return file->d_name;
+  else
+    return "Baby Joe";
+}
 
 struct {
   Scene *scene;
@@ -25,7 +38,7 @@ struct {
     .state = 0,
     .time = 0,
     .numRed = 1,
-    .numPlanes = 1,
+    .numPlanes = 4,
     .clickedShape = 0,
 };
 
@@ -72,8 +85,14 @@ void state5() {
   Erupt.time = 0;
   if (Erupt.clickedShape < Erupt.numRed) {
     Erupt.planes[Erupt.clickedShape].sprite.color = GREEN;
+    char text[50];
+    sprintf(text, "You loosed. Encrypt: %s", getRandomFile());
+    setText(Erupt.text, text);
+    Erupt.text->color = RED;
   } else {
     Erupt.planes[Erupt.clickedShape].sprite.color = RED;
+    setText(Erupt.text, "You won, take: $5");
+    Erupt.text->color = BLUE;
   }
 }
 
@@ -83,12 +102,12 @@ void eruptUpdate(Scene *scene, double theta) {
 
   switch (Erupt.state) {
   case 0:
-    if (Erupt.time > 1) // 2
+    if (Erupt.time > 2) // 2
       state1();
 
     break;
   case 1:
-    if (Erupt.time > 1) // 2
+    if (Erupt.time > 2) // 2
       state2();
 
     break;
@@ -97,11 +116,20 @@ void eruptUpdate(Scene *scene, double theta) {
       state3();
     break;
   case 3:
-    if (Erupt.time > 1) // 10
+    if (Erupt.time > 5) // 10
       state4();
     break;
   case 4:
     break;
+  case 5:
+    if (Erupt.time > 5) {
+      Erupt.numPlanes += 5;
+      if (Erupt.numPlanes > NPLANES)
+        Erupt.numPlanes = NPLANES;
+      Erupt.numRed++;
+      Erupt.state = 0;
+      Erupt.time = 0;
+    }
   }
 
   if (Erupt.state == 3)
@@ -113,7 +141,7 @@ void eruptRender(Scene *scene) {
   int i;
   for (i = 0; i < Erupt.numPlanes; i++)
     renderPlane(&Erupt.planes[i]);
-  if (Erupt.state == 4)
+  if (Erupt.state == 4 || Erupt.state == 5)
     renderText(Erupt.text);
 }
 
@@ -125,10 +153,11 @@ void eruptClick(Scene *scene, MouseClickEvent *e) {
     Pos *p = getShapePosition(&Erupt.planes[i].sprite);
     double dx = p->x - e->x, dy = p->y - e->y;
     double theta = dx * dx + dy * dy;
-    if (theta < 0.1) {
+    if (theta < 0.05) {
       printf("was cicked");
       Erupt.clickedShape = i;
       state5();
+      break;
     }
   }
 }

@@ -1,4 +1,4 @@
-#include "../../../gama/gama/assets/gama/gama.h"
+#include "../gama/gama.h"
 #include "math.h"
 #include <GL/gl.h>
 
